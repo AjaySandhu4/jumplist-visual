@@ -84,16 +84,19 @@ class JumpList:
         new_node = Node(item)
         new_node.next = pred.next
         pred.next = new_node
-        if new_node.next is None or (pred.jump and pred.jump == pred):
+        new_node.next_size = 0
+
+        if (new_node.next is None) or (pred.jump == pred):
             pred.jump = new_node
             pred.next_size = 0
             pred.jump_size = 1
             new_node.jump = new_node
-            new_node.next_size = 0
+            new_node.jump_size = 0
+        elif pred.jump == new_node.next:
+            new_node.jump = new_node
             new_node.jump_size = 0
         else:
             new_node.jump = new_node.next
-            new_node.next_size = 0
             new_node.jump_size = pred.next_size
 
         self.restore_randomness_after_insert(self.backbone.head, new_node, self.n)
@@ -101,8 +104,10 @@ class JumpList:
     def restore_randomness_after_insert(self, u, new_node, n): 
         to_rebuild = self.decision(n)
         if to_rebuild:
+            print('rebuilding')
             self.build(u, n)
         elif u.next and u.next == new_node:
+            print('usurping arches', new_node.data, u.next.data, u.next_size)
             self.usurp_arches(new_node, u.next_size)
         elif u.jump.data < new_node.data:
             self.restore_randomness_after_insert(u.jump, new_node, u.jump_size)
@@ -114,9 +119,12 @@ class JumpList:
     def usurp_arches(self, u, n):
         if n <= 1:
             u.jump = u
+            u.jump_size = 0
+            u.next_size = 0
             return
-        to_make_jump_successor = self.decision(u.next_size)
+        to_make_jump_successor = self.decision(n-1)
         if to_make_jump_successor:
+            print('ok what is happening here')
             u.jump = u.next
             u.jump_size = u.next_size
             u.next_size = 0
@@ -124,7 +132,8 @@ class JumpList:
             u.next_size = u.next.next_size + 1
             u.jump_size = u.next.jump_size
             u.jump = u.next.jump
-            self.usurp_arches(u.next, u.next.next_size)
+            print('usurping arches', u.data, u.next.data, u.next_size)
+            self.usurp_arches(u.next, u.next_size)
         
 
     def decision(self, n):
