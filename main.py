@@ -7,8 +7,8 @@ def main():
     s = SortedSLL()
     nums_to_insert = [10, 34, 345, 72, 123]
     random_array = []
-    for _ in range(25):
-        rand = random.randint(1, 100)
+    for _ in range(100):
+        rand = random.randint(1, 1000)
         if rand not in nums_to_insert:
             random_array.append(rand)
     random_array = np.unique(random_array)

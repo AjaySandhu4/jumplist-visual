@@ -175,13 +175,11 @@ class JumpList:
         pred = None
         curr = self.backbone.head
         while pred is None:
-            # print(curr.data)
             if curr.next and curr.next.data >= item:
                 pred = curr
                 pred.next_size += 1
                 break
             elif curr.jump and (curr.jump is not curr) and (item > curr.jump.data):
-                # print('making jump')
                 curr.jump_size += 1
                 curr = curr.jump
             else:
@@ -206,56 +204,35 @@ class JumpList:
             new_node.next_size = 0
             new_node.jump_size = pred.next_size
 
-        self.restore_random_insert(self.backbone.head, new_node, self.n)
+        self.restore_randomness_after_insert(self.backbone.head, new_node, self.n)
 
-    def restore_random_insert(self, u, new_node, n):
-        # print('restore_random_insert called with u:', u.data, 'n:', n)
-        # if n <= 1:
-        #     print('restore_random_insert BASE CASE', 'u:', u.data, 'new_node:', new_node.data)
-            
+    def restore_randomness_after_insert(self, u, new_node, n): 
         to_rebuild = self.decision(n)
         if to_rebuild:
             if n <= 1:
                 new_node.jump = new_node
                 return
             else:
-                # print('rebuilding', 'u:', u.data, 'n:', n)
                 self.build(u, n)
         elif u.next and u.next == new_node:
-            # if u.jump == u:
-            #     # print('SETTING JUMP TO NEW NODE', 'jump:', u.jump.data, 'new_node:', new_node.data)
-            #     # u.jump = new_node
-            #     # new_node.jump = new_node
-            #     # u.jump_size = 1
-            #     # u.next_size = 0
-            #     print('NOTHING TO BE DONE!!!!')
-            #     return
-            # else:
-                # print('restoring random and USURPING', 'next:', u.next.data, 'new_node:', new_node.data, 'next_size:', u.next_size)
             self.usurp_arches(new_node, u.next_size)
         elif u.jump.data < new_node.data:
-            # print('restoring random', 'JUMP:', u.jump.data, 'new_node:', new_node.data)
-            self.restore_random_insert(u.jump, new_node, u.jump_size)
+            self.restore_randomness_after_insert(u.jump, new_node, u.jump_size)
         elif u.next and u.next.data < new_node.data:
-            # print('restoring random', 'NEXT:', u.next.data, 'new_node:', new_node.data)
-            self.restore_random_insert(u.next, new_node, u.next_size)
+            self.restore_randomness_after_insert(u.next, new_node, u.next_size)
         else:
             raise Exception('Should not reach here')
     
     def usurp_arches(self, u, n):
-        # print('usurp_arches called with u:', u.data, 'n:', n)
         if n <= 1:
             u.jump = u
             return
-        
         to_make_jump_successor = self.decision(u.next_size)
         if to_make_jump_successor:
-            # print('usurp: making jump successor', 'u:', u.data, 'u.next:', u.next.data)
             u.jump = u.next
             u.jump_size = u.next_size
             u.next_size = 0
         else:
-            # print('usurping arches', 'u:', u.data, 'u.next:', u.next.data)  
             u.next_size = u.next.next_size + 1
             u.jump_size = u.next.jump_size
             u.jump = u.next.jump
@@ -267,8 +244,6 @@ class JumpList:
         if n == 0:
             raise Exception('n is 0')
         prob = 1/n
-        # print(f'rand: {rand}, prob: {prob}')
-        # return False
         return rand < prob
     
 
