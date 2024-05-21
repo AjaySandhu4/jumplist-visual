@@ -101,11 +101,11 @@ class JumpList:
     def restore_randomness_after_insert(self, u, new_node, n): 
         to_rebuild = self.decision(n)
         if to_rebuild:
-            if n <= 1:
-                new_node.jump = new_node
-                return
-            else:
-                self.build(u, n)
+            # if n <= 1:
+            #     new_node.jump = new_node
+            #     return
+            # else:
+            self.build(u, n)
         elif u.next and u.next == new_node:
             self.usurp_arches(new_node, u.next_size)
         elif u.jump.data < new_node.data:
