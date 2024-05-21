@@ -10,10 +10,6 @@ class JumpList:
         if sortedSLL is not None:
             self.backbone = sortedSLL
             self.build(self.backbone.head, self.backbone.n)
-            # self.build_2(self.backbone.head, self.backbone.n)
-            # self.build_perfect(self.backbone.head, self.backbone.n)
-            # self.optimized_build(self.backbone.head, self.backbone.n)
-            # self.rebalance(self.backbone.head, self.backbone.n)
             self.n = self.backbone.n
         else:
             self.backbone = SortedSLL()
@@ -21,50 +17,6 @@ class JumpList:
             self.backbone.head.jump = self.backbone.head
             self.n = 1
             
-
-    # def build(self, u, n):
-    #     if n == 1:
-    #         print('Reached base case:', u.data)
-    #         return u 
-    #     k = random.randint(2, n)
-    #     print(f'Build call u: {u.data}, k: {k}, n: {n}')
-    #     u.next_size = k-2
-    #     # print('u.next_size:', u.next_size)
-    #     u.jump_size = n-k+1
-    #     # print('u.jump_size:', u.jump_size)
-    #     p = self.build(u.next, k-1)
-    #     print('Post first build call; the jump node is:', p.data)
-    #     u.jump = p
-    #     q = self.build(p, n-k+1)
-    #     print('Post second build class; the node being returned is:', q.data)
-    #     return q
-    
-    # def build_2(self, x, n):
-    #     while(n > 1):
-    #         m = random.randint(2, n)
-    #         y = x.next
-    #         x.next_size = m-2
-    #         x.jump_size = n-m+1
-    #         x.jump = self.build_2(y, m-1)
-    #         # self.build(y, m-2)
-    #         x = x.jump
-    #         n = n-m+1
-    #     return x
-    
-    # def build_perfect(self, x, n):
-    #     while n > 1:
-    #         # m = random.randint(2, n)
-    #         m = floor((n-1)/2)
-    #         n = n-m-1
-    #         x.next_size = m
-    #         x.jump_size = n
-    #         y = x.next
-    #         x.jump = y if m == 0 else self.build_3(y, m)
-    #         x = x.jump
-    #     x.jump = x
-    #     x.next_size = 0
-    #     x.jump_size = 0
-    #     return x.next
     
     def build(self, x, n):
         while n > 1:
@@ -79,66 +31,6 @@ class JumpList:
         x.next_size = 0
         x.jump_size = 0
         return x.next
-
-    # def rebalance(self, x, n):
-    #     if n == 1:
-    #         x.jump = None
-    #         x.next_size = 0
-    #         x.jump_size = 0
-    #         return x.next
-    #     if n == 2:
-    #         x.jump = None
-    #         x.next_size = 1
-    #         x.jump_size = 0
-    #         x.next.next_size = 0
-    #         x.next.jump_size = 0
-    #         return x.next.next
-    #     j = random.randint(2, n)
-    #     return self.set_jump_and_rebalance(x, n, j)
-    
-    # def set_jump_and_rebalance(self, x, n, j):
-    #     nextEnd = self.rebalance(x.next, j-1)
-    #     self.rebalance(nextEnd, n-j)
-    #     x.jump_size = n-j+1
-    #     x.next_size = j-2
-    #     return x
-
-
-    # def insert(self, item):
-    #     self.n += 1
-    #     curr = self.backbone.head
-    #     while curr is not None:
-    #         pred = curr
-    #         if curr.next and curr.next.data >= item:
-    #             curr.next_size += 1
-    #             break
-    #         if curr.jump and item > curr.jump.data:
-    #             curr.jump_size += 1
-    #             curr = curr.jump
-    #         else:
-    #             curr.next_size += 1
-    #             curr = curr.next
-    #     new_node = Node(item)
-    #     new_node.next = pred.next
-    #     pred.next = new_node
-    #     self.restore_random_insert(self.backbone.head, self.n, new_node)
-
-
-    # def restore_random_insert(self, u, n, new_node):
-    #     to_rebuild = self.decision(n)
-    #     print(f'to_rebuild: {to_rebuild}')
-    #     if n <= 1:
-    #         new_node.jump = new_node.next
-    #     elif to_rebuild:
-    #         self.build(u, n)
-    #     elif u == new_node:
-    #         u.jump = u.next
-    #     elif u.jump is None:
-    #         u.jump = new_node
-    #     elif u.jump and u.jump.data <= new_node.data:
-    #         self.restore_random_insert(u.jump, u.jump_size, new_node)
-    #     elif u.next and u.next.data <= new_node.data:
-    #         self.restore_random_insert(u.next, u.next_size, new_node)
 
     # def delete(self, item):
     #     self.n -= 1
