@@ -5,13 +5,16 @@ import numpy as np
 
 def main():
     s = SortedSLL()
-    nums_to_insert = [10, 34, 345, 72, 123]
+    # nums_to_insert = [10, 34, 345, 72, 123]
+    # for i in range(1, 1000):
     random_array = []
-    for _ in range(100):
-        rand = random.randint(1, 1000)
-        if rand not in nums_to_insert:
-            random_array.append(rand)
-    random_array = np.unique(random_array)
+    for i in range(20):
+        # rand = random.randint(1, 1000)
+        # if rand not in nums_to_insert:
+        #   random_array.append(rand)
+        random_array.append(i)
+    random_array = np.unique(random_array, return_index=True)[0]
+    print(random_array)
     # for i in random_array:
     #     s.insert(i)
     # s.display()
@@ -25,7 +28,7 @@ def main():
     # j.display()
     # j.create_visualization('build_1 JL')
     # j.insert(0)
-    j.create_visualization('initial')
+    # j.create_visualization('initial')
     # for i in range(0, len(nums_to_insert)):
     #     print('\nInserting:', nums_to_insert[i])
     #     j.insert(nums_to_insert[i])
@@ -36,9 +39,9 @@ def main():
         j.insert(i)
     j.display()
     j.create_visualization('random_inserts')
-    # j.delete(72)
-    # j.display()
-    # j.create_visualization('build_2 JL')
+    j.delete(14)
+    j.display()
+    j.create_visualization('after delete 14')
     
     # j = JumpList()
     # j.insert(10)

@@ -104,10 +104,10 @@ class JumpList:
     def restore_randomness_after_insert(self, u, new_node, n): 
         to_rebuild = self.decision(n)
         if to_rebuild:
-            print('rebuilding')
+            # print('rebuilding')
             self.build(u, n)
         elif u.next and u.next == new_node:
-            print('usurping arches', new_node.data, u.next.data, u.next_size)
+            # print('usurping arches', new_node.data, u.next.data, u.next_size)
             self.usurp_arches(new_node, u.next_size)
         elif u.jump.data < new_node.data:
             self.restore_randomness_after_insert(u.jump, new_node, u.jump_size)
@@ -124,7 +124,7 @@ class JumpList:
             return
         to_make_jump_successor = self.decision(n-1)
         if to_make_jump_successor:
-            print('ok what is happening here')
+            # print('ok what is happening here')
             u.jump = u.next
             u.jump_size = u.next_size
             u.next_size = 0
@@ -132,8 +132,61 @@ class JumpList:
             u.next_size = u.next.next_size + 1
             u.jump_size = u.next.jump_size
             u.jump = u.next.jump
-            print('usurping arches', u.data, u.next.data, u.next_size)
+            # print('usurping arches', u.data, u.next.data, u.next_size)
             self.usurp_arches(u.next, u.next_size)
+
+    def delete(self, item):
+        pred = self.find_predecessor(item)
+        if pred is None:
+            print(
+                f'Item {item} not found in the list'
+            )
+            return None
+        self.n -= 1
+        curr = self.backbone.head
+        n = self.n
+        while curr is not None:
+            if curr.jump.data == item:
+                pred.next = pred.next.next
+                print('rebuilding', curr.data, n)
+                self.build(curr, n)
+                return
+            elif curr.next.data == item:
+                n = curr.next_size
+                print('unwinding arches (outside call)')
+                self.unwind_arches(curr.next, curr.jump_size, curr.next_size, curr.jump)
+                curr.next_size -= 1
+                pred.next = pred.next.next
+                return
+            elif (curr.jump != curr) and curr.jump.data < item:
+                curr.jump_size -= 1
+                curr = curr.jump
+                n = curr.jump_size
+            else:
+                curr.next_size -= 1
+                n = curr.next_size
+                curr = curr.next
+        
+    def unwind_arches(self, u, pred_jump_size, pred_next_size, pred_jump):
+        if u.jump_size == 0:
+            return
+
+        curr_jump = u.jump
+        curr_jump_size = u.jump_size
+        curr_next_size = u.next_size
+
+        u.jump = pred_jump
+        u.jump_size = pred_jump_size
+        u.next_size = pred_next_size-1
+
+
+        print('unwinding arches')
+        self.unwind_arches(u.next, curr_jump, curr_jump_size, curr_next_size)
+
+            
+
+
+        
         
 
     def decision(self, n):
@@ -171,7 +224,7 @@ class JumpList:
         while curr is not None:
             if curr.next and curr.next.data >= item:
                 return curr
-            if curr.jump and item > curr.jump.data:
+            if (curr.jump != curr) and item > curr.jump.data:
                 curr = curr.jump
             else:
                 curr = curr.next
